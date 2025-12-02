@@ -8,7 +8,7 @@ class RtdService {
   /// ==============================================================================
   /// 1. نظام التواجد (Presence System) - معرفة المتصلين
   /// ==============================================================================
-  
+
   /// هذه الميزة هي "الجوهرة" في Realtime Database وتتفوق فيها على Firestore.
   /// تسمح لك بمعرفة ما إذا كان المستخدم متصلاً حالياً، وعندما يقطع الاتصال (يغلق التطبيق أو يفصل النت)
   /// يقوم السيرفر تلقائياً بتحديث حالته في قاعدة البيانات حتى لو لم يستطع الجهاز إرسال طلب.
@@ -16,30 +16,39 @@ class RtdService {
     // مرجع لحالة اتصال الجهاز الحالي بالسيرفر
     // .info/connected هو موقع خاص في RTD يعطيك true اذا كان الجهاز متصل بـ Firebase
     final connectedRef = FirebaseDatabase.instance.ref(".info/connected");
-    
+
     // مرجع لمكان تخزين حالة المستخدم في الداتا بيز
     final userStatusRef = _db.child("status/$userId");
 
     connectedRef.onValue.listen((event) {
       final connected = event.snapshot.value as bool? ?? false;
-      
+
       if (connected) {
         // 1. عند الاتصال، نسجل أن المستخدم "online"
-        userStatusRef.set({
-          "state": "online",
-          "last_changed": ServerValue.timestamp,
-        });
-
-        // 2. onDisconnect: هذا هو السحر!
-        // نقول للسيرفر: "يا سيرفر، إذا انقطع اتصالي بك لأي سبب (كراش، انترنت فصل)،
-        // أرجوك قم بتنفيذ هذا الأمر نيابة عني".
-        // هنا نقول له: حول حالتي إلى "offline".
-        userStatusRef.onDisconnect().set({
-          "state": "offline",
-          "last_changed": ServerValue.timestamp,
-        });
+        userStatusRef.set({"state": "online", "last_changed": ServerValue.timestamp});
       }
     });
+
+    userStatusRef.onDisconnect().set({"state": "offline", "last_changed": ServerValue.timestamp});
+  }
+
+  /// الاستماع لتغيّر حالة مستخدم محدد
+  /// Returns a Stream of the user's status map (state, last_changed)
+  Stream<Map<String, dynamic>> listenToUserStatus(String userId) {
+    final userStatusRef = _db.child('status/$userId');
+    return userStatusRef.onValue.map((event) {
+      final value = event.snapshot.value;
+      if (value is Map) {
+        return Map<String, dynamic>.from(value);
+      }
+      return {};
+    });
+  }
+
+  /// الحصول على حالة المستخدم الحالية مرة واحدة
+  Future<String?> getUserStatus(String userId) async {
+    final snapshot = await _db.child('status/$userId/state').get();
+    return snapshot.value as String?;
   }
 
   /// مراقبة عدد المستخدمين المتصلين في "غرفة" أو "index" معين
@@ -47,14 +56,10 @@ class RtdService {
   Stream<int> trackOnlineUsersCount() {
     // نفترض أننا نخزن المستخدمين المتصلين تحت 'status'
     // نقوم بفلترة المستخدمين الذين حالتهم 'online'
-    return _db.child("status")
-        .orderByChild("state")
-        .equalTo("online")
-        .onValue
-        .map((event) {
-          // نرجع عدد الأطفال (المستخدمين) الذين طابقوا الفلتر
-          return event.snapshot.children.length;
-        });
+    return _db.child("status").orderByChild("state").equalTo("online").onValue.map((event) {
+      // نرجع عدد (المستخدمين) الذين طابقوا الفلتر
+      return event.snapshot.children.length;
+    });
   }
 
   /// ==============================================================================
@@ -71,9 +76,7 @@ class RtdService {
   /// تعديل حقول محددة فقط دون حذف باقي البيانات (Update)
   Future<void> updateUserEmail(String userId, String newEmail) async {
     // سيتم تعديل email فقط وترك الاسم والعمر كما هم
-    await _db.child("users").child(userId).update({
-      "email": newEmail,
-    });
+    await _db.child("users").child(userId).update({"email": newEmail});
   }
 
   /// إضافة عنصر جديد لقائمة (Push)
@@ -119,10 +122,11 @@ class RtdService {
   /// جلب البيانات مرتبة ومفلترة
   /// ملاحظة: في RTD الترتيب والفلترة محدودين مقارنة بـ Firestore
   Stream<DatabaseEvent> getRecentMessages(String chatId) {
-    return _db.child("chats")
+    return _db
+        .child("chats")
         .child(chatId)
         .orderByChild("timestamp") // ترتيب حسب الوقت
-        .limitToLast(20)          // جلب آخر 20 رسالة فقط
+        .limitToLast(20) // جلب آخر 20 رسالة فقط
         .onValue;
   }
 

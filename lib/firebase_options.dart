@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '305305642988',
     projectId: 'for-delete-c0d5f',
     authDomain: 'for-delete-c0d5f.firebaseapp.com',
+    databaseURL: 'https://for-delete-c0d5f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'for-delete-c0d5f.appspot.com',
     measurementId: 'G-31VPQ2H99J',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:305305642988:android:a4f7119a5a802abfdf42c9',
     messagingSenderId: '305305642988',
     projectId: 'for-delete-c0d5f',
+    databaseURL: 'https://for-delete-c0d5f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'for-delete-c0d5f.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:305305642988:ios:41c46396f97796a1df42c9',
     messagingSenderId: '305305642988',
     projectId: 'for-delete-c0d5f',
+    databaseURL: 'https://for-delete-c0d5f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'for-delete-c0d5f.appspot.com',
     iosBundleId: 'com.example.testRtd',
   );
@@ -76,6 +79,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '305305642988',
     projectId: 'for-delete-c0d5f',
     authDomain: 'for-delete-c0d5f.firebaseapp.com',
+    databaseURL: 'https://for-delete-c0d5f-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'for-delete-c0d5f.appspot.com',
     measurementId: 'G-53QQGJMDM1',
   );
