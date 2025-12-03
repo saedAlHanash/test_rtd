@@ -2,13 +2,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
+import 'home_page.dart';
 import 'rtd_service.dart';
 import 'dart:ui';
+import 'remote_config_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await RemoteConfigService.instance.init();
   runApp(const MyApp());
 }
 
@@ -26,7 +29,13 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF1E1E2F),
         textTheme: GoogleFonts.interTextTheme(ThemeData(brightness: Brightness.dark).textTheme),
       ),
-      home: const PresenceDemoPage(),
+      // Define routes for navigation
+      routes: {'/remote-config': (context) => const RemoteConfigDemoPage()},
+      home: const HomePage(),
+      // Floating button to open Remote Config demo
+      builder: (context, child) {
+        return Stack(children: [child!]);
+      },
     );
   }
 }
@@ -163,6 +172,53 @@ class _PresenceDemoPageState extends State<PresenceDemoPage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Remote Config Demo Page – simple UI to test values
+class RemoteConfigDemoPage extends StatefulWidget {
+  const RemoteConfigDemoPage({super.key});
+
+  @override
+  State<RemoteConfigDemoPage> createState() => _RemoteConfigDemoPageState();
+}
+
+class _RemoteConfigDemoPageState extends State<RemoteConfigDemoPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Listen for any config updates while this page is visible
+    RemoteConfigService.instance.addListener(() => setState(() {}));
+  }
+
+  Future<void> _fetch() async {
+    final ok = await RemoteConfigService.instance.fetchAndActivate();
+    print('ok:$ok');
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fetch & Activate: ${ok ? "✅" : "❌"}')));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final rc = RemoteConfigService.instance;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Remote Config Demo'), backgroundColor: Colors.transparent, elevation: 0),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Welcome Message: ${rc.welcomeMessage}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 12),
+            Text('Show New Feature: ${rc.showNewFeature}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 12),
+            Text('Max Items: ${rc.maxItems}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(onPressed: _fetch, icon: const Icon(Icons.refresh), label: const Text('Fetch & Activate')),
+          ],
         ),
       ),
     );

@@ -21,6 +21,7 @@ dependencies:
   cloud_firestore: ^6.1.0
   firebase_database: ^12.1.0
   google_fonts:
+  firebase_remote_config: ^6.1.2
 
 dev_dependencies:
   flutter_test:
