@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:drawable_text/drawable_text.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'kayanee_model.dart';
 import 'kayanee_widget.dart';
 
@@ -322,15 +323,18 @@ class _JsonGeneratorPageState extends State<JsonGeneratorPage> {
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
             suffixIcon: isColor
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: _tryParseColor(controller.text),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white),
+                ? GestureDetector(
+                    onTap: () => _showPickColor(controller),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: _tryParseColor(controller.text),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white),
+                        ),
                       ),
                     ),
                   )
@@ -344,9 +348,45 @@ class _JsonGeneratorPageState extends State<JsonGeneratorPage> {
 
   Color _tryParseColor(String hex) {
     try {
+      if (hex.isEmpty) return Colors.transparent;
       return Color(int.parse('0xFF${hex.replaceAll('#', '')}'));
     } catch (_) {
       return Colors.transparent;
     }
+  }
+
+  void _showPickColor(TextEditingController controller) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Pick a color'),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: _tryParseColor(controller.text),
+              onColorChanged: (color) {
+                // Formatting to #RRGGBB
+                final hexCode = color.value.toRadixString(16).toUpperCase().padLeft(8, '0');
+                // hexCode is AARRGGBB, we want RRGGBB if user uses that format, but keeping it simple:
+                // If the user's input logic expects 6 chars + implied FF, we should give 6 chars.
+                // Substring(2) gives RRGGBB.
+                controller.text = '#${hexCode.substring(2)}';
+              },
+              // Disable alpha to keep it simple 6-hex #RRGGBB
+              enableAlpha: false,
+              displayThumbColor: true,
+              labelTypes: const [],
+              paletteType: PaletteType.hsvWithHue,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Done'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
