@@ -1,9 +1,11 @@
-import 'package:firebase_core/firebase_core.dart';
+ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 import 'rtd_service.dart';
 import 'dart:ui';
+import 'json_generator_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,16 +19,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Presence System Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6C63FF), brightness: Brightness.dark),
-        scaffoldBackgroundColor: const Color(0xFF1E1E2F),
-        textTheme: GoogleFonts.interTextTheme(ThemeData(brightness: Brightness.dark).textTheme),
+    return ScreenUtilInit(
+      designSize: MediaQuery.of(context).size,
+      // designSize: const Size(14440, 972),
+      minTextAdapt: true,
+      // splitScreenMode: true,
+      child: MaterialApp(
+        title: 'Presence System Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6C63FF), brightness: Brightness.dark),
+          scaffoldBackgroundColor: const Color(0xFF1E1E2F),
+          textTheme: GoogleFonts.interTextTheme(ThemeData(brightness: Brightness.dark).textTheme),
+        ),
+        home: const JsonGeneratorPage(),
       ),
-      home: const PresenceDemoPage(),
     );
   }
 }

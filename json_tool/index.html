@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد JSON لفتنس ستورم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <header class="app-header">
+            <div class="logo-area">
+                <h1>Fitness Storm <span>JSON Generator</span></h1>
+                <p>قم بتخصيص البيانات لتوليد كود التكوين</p>
+            </div>
+        </header>
+
+        <main class="editor-grid">
+            <!-- Left Column: Inputs -->
+            <section class="input-section glass-panel">
+                <h2><span class="icon">🎨</span> الألوان والمظهر</h2>
+                <div class="form-row">
+                    <div class="form-group color-group">
+                        <label for="color_start">Color Start (البداية)</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color_start" value="#6340D6">
+                            <input type="text" id="text_color_start" value="#6340D6" class="color-code">
+                        </div>
+                    </div>
+                    <div class="form-group color-group">
+                        <label for="color_end">Color End (النهاية)</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color_end" value="#10D1BD">
+                            <input type="text" id="text_color_end" value="#10D1BD" class="color-code">
+                        </div>
+                    </div>
+                </div>
+
+                <h2><span class="icon">📝</span> النصوص (عربي / English)</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title_ar">العنوان (Arabic)</label>
+                        <input type="text" id="title_ar" value="تدرب بملابس رياضية">
+                    </div>
+                    <div class="form-group ltr-input">
+                        <label for="title_en">Title (English)</label>
+                        <input type="text" id="title_en" value="Train in sportswear.">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="description_ar">الوصف (Arabic)</label>
+                        <textarea id="description_ar" rows="2">تحرك، ارتدي، استعيد, سهل الحركة وراحة لا توصف</textarea>
+                    </div>
+                    <div class="form-group ltr-input">
+                        <label for="description_en">Description (English)</label>
+                        <textarea id="description_en"
+                            rows="2">Move, wear, recover, easy movement and unparalleled comfort.</textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="text_ar">نص إضافي (Arabic)</label>
+                        <input type="text" id="text_ar" value="فتنس ستورم للملابس, عالم من الاناقة الفاخرة">
+                    </div>
+                    <div class="form-group ltr-input">
+                        <label for="text_en">Additional Text (English)</label>
+                        <input type="text" id="text_en" value="Fitness Storm Clothing, a world of luxurious style.">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="btn_ar">نص الزر (Arabic)</label>
+                        <input type="text" id="btn_ar" value="زيارة فتنس">
+                    </div>
+                    <div class="form-group ltr-input">
+                        <label for="btn_en">Button Text (English)</label>
+                        <input type="text" id="btn_en" value="Visit Fitness">
+                    </div>
+                </div>
+
+                <h2><span class="icon">🔗</span> الروابط والصور</h2>
+
+                <div class="form-group ltr-input">
+                    <label for="image">Image URL</label>
+                    <input type="url" id="image"
+                        value="https://firebasestorage.googleapis.com/v0/b/fitness-strom-1.appspot.com/o/fitness_images%2F52-1-683x1024.png?alt=media&token=ecb71a1c-4057-40ee-83bd-1cc95b5bb013">
+                </div>
+
+                <div class="form-group ltr-input">
+                    <label for="logo">Logo URL</label>
+                    <input type="url" id="logo"
+                        value="https://firebasestorage.googleapis.com/v0/b/fitness-strom-1.appspot.com/o/fitness_images%2Fnew_logo.png?alt=media&token=ab23d8c1-4378-44b6-ac76-75171c0e6c87">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group ltr-input">
+                        <label for="link">Target Link</label>
+                        <input type="url" id="link" value="https://fitnessstorm.org/en/shop/">
+                    </div>
+                    <div class="form-group ltr-input">
+                        <label for="event_name">Event Name</label>
+                        <input type="text" id="event_name" value="visite_fitness_shop">
+                    </div>
+                </div>
+
+                <div class="action-area">
+                    <button id="generateBtn" class="primary-btn">✨ توليد JSON</button>
+                </div>
+            </section>
+
+            <!-- Right Column: Output -->
+            <section class="output-section">
+                <div class="preview-card glass-panel header-preview" id="previewContainer">
+                    <h3>معاينة البطاقة (Live Preview)</h3>
+
+                    <!-- Kayanee Widget Simulation -->
+                    <div class="kayanee-widget">
+                        <!-- Header Title -->
+                        <div class="kayanee-header">
+                            <h2 id="prev_title">تدرب بملابس رياضية</h2>
+                            <a href="#" class="see-all">عرض الكل</a>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="kayanee-desc" id="prev_desc">تحرك، ارتدي، استعيد, سهل الحركة وراحة لا توصف</p>
+
+                        <!-- Gradient Card -->
+                        <div class="kayanee-card" id="kayaneeCard">
+                            <!-- Background Image (Person) -->
+                            <div class="kayanee-bg-image">
+                                <img id="prev_image" src="" alt="Model">
+                            </div>
+
+                            <!-- Content Overlay -->
+                            <div class="kayanee-content">
+                                <img id="prev_logo" src="" alt="Logo" class="kayanee-logo">
+
+                                <p class="kayanee-text" id="prev_text">فتنس ستورم للملابس, عالم من الاناقة الفاخرة</p>
+
+                                <button class="kayanee-btn" id="prev_btn">زيارة فتنس</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="json-output glass-panel">
+                    <div class="output-header">
+                        <h3>النتيجة (JSON)</h3>
+                        <button id="copyBtn" class="icon-btn" title="نسخ الكود">📋 نسخ</button>
+                    </div>
+                    <pre><code id="jsonOutput" class="language-json">اضغط على "توليد" لرؤية النتيجة هنا...</code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
